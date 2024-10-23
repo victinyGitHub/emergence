@@ -11,8 +11,8 @@ class GameOfLife:
         self.birth_rule = birth_rule
         self.survival_rule = survival_rule
         self.kernel = np.array([[2, 1, 1],
-                                [1, 0, 1],
-                                [1, 1, 0]])
+                                [-1, 0.5, 1],
+                                [1, 0.5, 2]])
 
     def update(self):
         neighbor_count = convolve(self.grid, self.kernel, mode='wrap')
