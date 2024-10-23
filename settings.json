@@ -31,5 +31,16 @@
             4
         ],
         "grid_size": 50
+    },
+    {
+        "birth_rule": [
+            2,
+            6
+        ],
+        "survival_rule": [
+            2,
+            7
+        ],
+        "grid_size": 435
     }
 ]

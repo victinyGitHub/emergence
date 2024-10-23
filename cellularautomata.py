@@ -11,9 +11,9 @@ class GameOfLife:
         self.grid = np.random.choice([0, 1], size=(size, size), p=[0.8, 0.2])
         self.birth_rule = birth_rule
         self.survival_rule = survival_rule
-        self.kernel = np.array([[0.5, 1, 1],
-                                [-1, 0.5, 1],
-                                [1, -0.5, 0.5]])
+        self.kernel = np.array([[2, 0, 1],
+                                [1, 0, 5],
+                                [2, 0, 0]])
 
     def update(self):
         neighbor_count = convolve(self.grid, self.kernel, mode='wrap')
