@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import matplotlib.widgets as widgets
 from scipy.ndimage import convolve
+import json
 
 class GameOfLife:
     def __init__(self, size=50, birth_rule=[3], survival_rule=[2, 3]):
@@ -10,9 +11,9 @@ class GameOfLife:
         self.grid = np.random.choice([0, 1], size=(size, size), p=[0.8, 0.2])
         self.birth_rule = birth_rule
         self.survival_rule = survival_rule
-        self.kernel = np.array([[2, 1, 1],
+        self.kernel = np.array([[0.5, 1, 1],
                                 [-1, 0.5, 1],
-                                [1, 0.5, 2]])
+                                [1, -0.5, 0.5]])
 
     def update(self):
         neighbor_count = convolve(self.grid, self.kernel, mode='wrap')
@@ -49,6 +50,11 @@ class GameOfLifeVisualization:
         self.slider_size = widgets.Slider(self.ax_size, 'Grid Size', 10, 10000, valinit=50, valstep=1)
         self.slider_size.on_changed(self.resize)
 
+        # Add a button for saving settings
+        self.ax_save = plt.axes([0.81, 0.10, 0.1, 0.04])
+        self.btn_save = widgets.Button(self.ax_save, 'Save Settings')
+        self.btn_save.on_clicked(self.save_settings)
+
     def update(self, frame):
         self.game.birth_rule = list(range(int(self.slider_birth.val[0]), int(self.slider_birth.val[1])+1))
         self.game.survival_rule = list(range(int(self.slider_survival.val[0]), int(self.slider_survival.val[1])+1))
@@ -68,6 +74,23 @@ class GameOfLifeVisualization:
     def animate(self):
         self.anim = FuncAnimation(self.fig, self.update, frames=200, interval=50, blit=True)
         plt.show()
+
+    def save_settings(self, event):
+        settings = {
+            'birth_rule': [int(self.slider_birth.val[0]), int(self.slider_birth.val[1])],
+            'survival_rule': [int(self.slider_survival.val[0]), int(self.slider_survival.val[1])],
+            'grid_size': int(self.slider_size.val)
+        }
+        try:
+            with open('settings.json', 'r') as file:
+                data = json.load(file)
+        except FileNotFoundError:
+            data = []
+
+        data.append(settings)
+
+        with open('settings.json', 'w') as file:
+            json.dump(data, file, indent=4)
 
 if __name__ == "__main__":
     viz = GameOfLifeVisualization()
